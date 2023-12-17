@@ -87,6 +87,7 @@ public class GameWritable implements Writable {
         this.clanTr2 = clanTr2;
     }
 
+    @Override
     public void write(DataOutput out) throws IOException {
         out.writeLong(date.toEpochMilli());
         out.writeLong(round);
