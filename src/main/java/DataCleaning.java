@@ -19,23 +19,35 @@ public class DataCleaning {
           extends Mapper<Object, Text, Text, GameWritable>{
     Gson gson = new Gson();
 
-    public String cardLength(String cards){
-      if(cards.length() == 18 && cards.endsWith("6e"))
-        return cards.substring(0,cards.length()-2);
+    public String checkCards(String cards){
+      if(cards.length() == 18 && cards.endsWith("6E"))
+        return cards.substring(0,17);
       else if(cards.length() > 16)
-        return "";
+        throw new IllegalArgumentException("Cards invalid.");
       return cards;
     }
+
+    public boolean checkInput(GameWritable game){
+      // Tester si les données entrées sont valides
+      return true;
+    }
+
     public void map(Object key, Text value, Context context
     ) throws IOException, InterruptedException {
-      GameWritable game = gson.fromJson(value.toString(), GameWritable.class);
-      String[] sorted = Stream.of(game.player1, game.player2).sorted().toArray(String[]::new);
 
-      game.cards1 = cardLength(game.cards1);
-      game.cards2 = cardLength(game.cards2);
+      try {
+        GameWritable game = gson.fromJson(value.toString(), GameWritable.class);
 
-      if(!(game.cards1.isEmpty() && game.cards2.isEmpty()) && game.deck1 !=0  && game.deck2 !=0)
-        context.write(new Text(game.date.toString() + "_" + game.round + "_" + sorted[0] + "_" + sorted[1]), game);
+        String[] sorted = Stream.of(game.player1, game.player2).sorted().toArray(String[]::new);
+
+        game.cards1 = checkCards(game.cards1);
+        game.cards2 = checkCards(game.cards2);
+
+        if (!(game.cards1.isEmpty() && game.cards2.isEmpty()) && game.deck1 != 0 && game.deck2 != 0)
+          context.write(new Text(game.date.toString() + "_" + game.round + "_" + sorted[0] + "_" + sorted[1]), game);
+      }catch (IOException e){
+        throw new RuntimeException(e);
+      }
     }
   }
   public static class DataCleaningReducer
