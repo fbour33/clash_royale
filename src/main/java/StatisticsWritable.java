@@ -6,15 +6,15 @@ import java.io.IOException;
 
 public class StatisticsWritable implements Writable {
 
-    private int totalVictories;
-    private int totalUses;
-    private int uniquePlayers;
-    private int highestClanLevel;
+    private long totalVictories;
+    private long totalUses;
+    private long uniquePlayers;
+    private long highestClanLevel;
     private double averageStrength;
 
 
-    public StatisticsWritable(int totalVictories, int totalUses, int uniquePlayers,
-                             int highestClanLevel, double averageStrengthDifference) {
+    public StatisticsWritable(long totalVictories, long totalUses, long uniquePlayers,
+                              long highestClanLevel, double averageStrengthDifference) {
         this.totalVictories = totalVictories;
         this.totalUses = totalUses;
         this.uniquePlayers = uniquePlayers;
@@ -22,31 +22,31 @@ public class StatisticsWritable implements Writable {
         this.averageStrength = averageStrengthDifference;
     }
 
-    public int getTotalVictories() {
+    public long getTotalVictories() {
         return totalVictories;
     }
 
-    public void setTotalVictories(int totalVictories) {
+    public void setTotalVictories(long totalVictories) {
         this.totalVictories = totalVictories;
     }
 
-    public int getTotalUses() {
+    public long getTotalUses() {
         return totalUses;
     }
 
-    public void setTotalUses(int totalUses) {
+    public void setTotalUses(long totalUses) {
         this.totalUses = totalUses;
     }
 
-    public int getUniquePlayers() {
+    public long getUniquePlayers() {
         return uniquePlayers;
     }
 
-    public void setUniquePlayers(int uniquePlayers) {
+    public void setUniquePlayers(long uniquePlayers) {
         this.uniquePlayers = uniquePlayers;
     }
 
-    public int getHighestClanLevel() {
+    public long getHighestClanLevel() {
         return highestClanLevel;
     }
 
@@ -64,21 +64,21 @@ public class StatisticsWritable implements Writable {
 
 
     @Override
-    public void write(DataOutput dataOutput) throws IOException {
-        dataOutput.writeInt(totalVictories);
-        dataOutput.writeInt(totalUses);
-        dataOutput.writeInt(uniquePlayers);
-        dataOutput.writeInt(highestClanLevel);
-        dataOutput.writeDouble(averageStrength);
+    public void write(DataOutput out) throws IOException {
+        out.writeLong(totalVictories);
+        out.writeLong(totalUses);
+        out.writeLong(uniquePlayers);
+        out.writeLong(highestClanLevel);
+        out.writeDouble(averageStrength);
     }
 
     @Override
-    public void readFields(DataInput dataInput) throws IOException {
-        totalVictories = dataInput.readInt();
-        totalUses = dataInput.readInt();
-        uniquePlayers = dataInput.readInt();
-        highestClanLevel = dataInput.readInt();
-        averageStrength = dataInput.readDouble();
+    public void readFields(DataInput in) throws IOException {
+        totalVictories = in.readLong();
+        totalUses = in.readLong();
+        uniquePlayers = in.readLong();
+        highestClanLevel = in.readLong();
+        averageStrength = in.readDouble();
     }
 
     @Override
