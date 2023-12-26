@@ -6,36 +6,36 @@ import java.io.IOException;
 
 public class StatisticsWritable implements Writable {
 
-    private long totalVictories;
-    private long totalUses;
+    private long victories;
+    private long uses;
     private long uniquePlayers;
     private long highestClanLevel;
-    private double averageStrength;
+    private double averageDiffForce;
 
 
-    public StatisticsWritable(long totalVictories, long totalUses, long uniquePlayers,
-                              long highestClanLevel, double averageStrengthDifference) {
-        this.totalVictories = totalVictories;
-        this.totalUses = totalUses;
+    public StatisticsWritable(long victories, long uses, long uniquePlayers,
+                              long highestClanLevel, double averageDiffForce) {
+        this.victories = victories;
+        this.uses = uses;
         this.uniquePlayers = uniquePlayers;
         this.highestClanLevel = highestClanLevel;
-        this.averageStrength = averageStrengthDifference;
+        this.averageDiffForce = averageDiffForce;
     }
 
-    public long getTotalVictories() {
-        return totalVictories;
+    public long getVictories() {
+        return victories;
     }
 
-    public void setTotalVictories(long totalVictories) {
-        this.totalVictories = totalVictories;
+    public void setVictories(long victories) {
+        this.victories = victories;
     }
 
-    public long getTotalUses() {
-        return totalUses;
+    public long getUses() {
+        return uses;
     }
 
-    public void setTotalUses(long totalUses) {
-        this.totalUses = totalUses;
+    public void setUses(long uses) {
+        this.uses = uses;
     }
 
     public long getUniquePlayers() {
@@ -50,43 +50,43 @@ public class StatisticsWritable implements Writable {
         return highestClanLevel;
     }
 
-    public void setHighestClanLevel(int highestClanLevel) {
+    public void setHighestClanLevel(long highestClanLevel) {
         this.highestClanLevel = highestClanLevel;
     }
 
-    public double getAverageStrength() {
-        return averageStrength;
+    public double getAverageDiffForce() {
+        return averageDiffForce;
     }
 
-    public void setAverageStrength(double averageStrength) {
-        this.averageStrength = averageStrength;
+    public void setAverageDiffForce(double averageDiffForce) {
+        this.averageDiffForce = averageDiffForce;
     }
 
 
     @Override
     public void write(DataOutput out) throws IOException {
-        out.writeLong(totalVictories);
-        out.writeLong(totalUses);
+        out.writeLong(victories);
+        out.writeLong(uses);
         out.writeLong(uniquePlayers);
         out.writeLong(highestClanLevel);
-        out.writeDouble(averageStrength);
+        out.writeDouble(averageDiffForce);
     }
 
     @Override
     public void readFields(DataInput in) throws IOException {
-        totalVictories = in.readLong();
-        totalUses = in.readLong();
+        victories = in.readLong();
+        uses = in.readLong();
         uniquePlayers = in.readLong();
         highestClanLevel = in.readLong();
-        averageStrength = in.readDouble();
+        averageDiffForce = in.readDouble();
     }
 
     @Override
     public String toString() {
-        return String.format("Total Victories: %d" +
-                        "\nTotal Uses: %d\nUnique Players: %d" +
+        return String.format("Victories: %d" +
+                        "\nUses: %d\nUnique Players: %d" +
                         "\nHighest Clan Level: %d" +
-                        "\nAverage Strength: %.2f",
-                totalVictories, totalUses, uniquePlayers, highestClanLevel, averageStrength);
+                        "\nAverage diff Force : %.2f",
+                victories, uses, uniquePlayers, highestClanLevel, averageDiffForce);
     }
 }
