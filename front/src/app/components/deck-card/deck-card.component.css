@@ -1,0 +1,46 @@
+.custom-card {
+  background-color: white;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-card img {
+  max-width: 100%;
+  height: auto;
+}
+
+th{
+  font-size: 13px;
+}
+
+td{
+  font-size: 12px;
+}
+
+.victories-header {
+  background-color: #f2f8ff;
+  border-bottom: 2px solid #3498db;
+}
+
+.uses-header {
+  background-color: #eafcef;
+  border-bottom: 2px solid #2ecc71;
+}
+
+.unique-players-header {
+  background-color: #faf2e7;
+  border-bottom: 2px solid #f39c12;
+}
+
+.highest-clan-level-header {
+  background-color: #ffefef;
+  border-bottom: 2px solid #e74c3c;
+}
+
+.average-force-diff-header {
+  background-color: #fbf4ff;
+  border-bottom: 2px solid #9b59b6;
+}
+

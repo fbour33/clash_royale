@@ -1,0 +1,29 @@
+[
+  {
+    "deck": "0201020405154d5a",
+    "victories": 131,
+    "uses": 129,
+    "uniquePlayers": 8,
+    "highestClanLevel": 4545,
+    "sumDiffForce": 0.250,
+    "averageDiffForce": 1
+  },
+  {
+    "deck": "00010205143b5166",
+    "victories": 82,
+    "uses": 28,
+    "uniquePlayers": 23,
+    "highestClanLevel": 4782,
+    "sumDiffForce": 0.125,
+    "averageDiffForce": 1
+  },
+  {
+    "deck": "0001020520516263",
+    "victories": 34,
+    "uses": 50,
+    "uniquePlayers": 12,
+    "highestClanLevel": 4952,
+    "sumDiffForce": -0.425,
+    "averageDiffForce": 1
+  }
+]
