@@ -20,10 +20,6 @@ public class GameWritable implements Writable {
 
     public PlayerWritable player1;
     public PlayerWritable player2;
-    
-    
-
-    
 
     public GameWritable(){}
 
@@ -60,8 +56,6 @@ public class GameWritable implements Writable {
         player1.readFields(in);
         player2 = new PlayerWritable();
         player2.readFields(in);
-
-
     }
 
     @Override
