@@ -4,7 +4,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class PlayerWritable implements Writable {
+public class PlayerWritable implements Writable, Cloneable {
 
     
     String playerId;
@@ -84,19 +84,40 @@ public class PlayerWritable implements Writable {
     }
 
     @Override
-    public String toString() {
-        return "{" +
-                 "\"player\":\"" + playerId + "\"," +
-                "\"level\":" + level + "," +
-                "\"deck\":" + deck + "," +
-                "\"all_deck\":" + allDeck + "," +
-                "\"clan\":\"" + clanId + "\"," +
-                "\"crown\":" + crown + "," +
-                "\"exp\":" + exp + "," +
-                "\"expPoints\":" + expPoints + "," +
-                "\"cards\":\"" + cards + "\"," +
-                "\"cardScore\":" + cardScore + "," +
-                "\"clanTr\":" + clanTr +
-                "}";
+    public PlayerWritable clone() {
+        try{
+            PlayerWritable clone = (PlayerWritable) super.clone();
+            clone.playerId = this.playerId;
+            clone.level = this.level;
+            clone.deck = this.deck;
+            clone.allDeck = this.allDeck;
+            clone.clanId = this.clanId;
+            clone.crown = this.crown;
+            clone.exp = this.exp;
+            clone.expPoints = this.expPoints;
+            clone.cards = this.cards;
+            clone.cardScore = this.cardScore;
+            clone.clanTr = this.clanTr;
+            return clone;
+        }catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
+
+//    @Override
+//    public String toString() {
+//        return "{" +
+//                 "\"player\":\"" + playerId + "\"," +
+//                "\"level\":" + level + "," +
+//                "\"deck\":" + deck + "," +
+//                "\"all_deck\":" + allDeck + "," +
+//                "\"clan\":\"" + clanId + "\"," +
+//                "\"crown\":" + crown + "," +
+//                "\"exp\":" + exp + "," +
+//                "\"expPoints\":" + expPoints + "," +
+//                "\"cards\":\"" + cards + "\"," +
+//                "\"cardScore\":" + cardScore + "," +
+//                "\"clanTr\":" + clanTr +
+//                "}";
+//    }
 }
