@@ -1,0 +1,37 @@
+.title{
+  font-size: 26px;
+  text-align: center;
+  color: #0c3a8c;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 20px;
+  justify-content: center;
+}
+
+.small {
+  width: 50px;
+  height: 50px;
+  margin: 2px;
+}
+
+.selected {
+  border: 4px solid #ff6302;
+}
+
+.button {
+  cursor: pointer;
+  background-color: #2250a4;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+  width: fit-content;
+}
+
+.button-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

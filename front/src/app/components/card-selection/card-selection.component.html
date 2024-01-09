@@ -1,0 +1,23 @@
+<div>
+  <h1 class="title">Choose Cards</h1>
+  <div class="card-container bg-white py-3 mt-3">
+    <div *ngFor="let card of cr_cards">
+      <img
+        [src]="card.iconUrls.medium"
+        alt="{{ card.name }}"
+        (click)="toggleCardSelection(card.id)"
+        [class.selected]="selectedCardIds.includes(card.id)"
+        class="small"
+      />
+    </div>
+  </div>
+  <div class="button-container mt-3">
+    <div class="button p-3" (click)="viewStatistics()">Voir les statistiques</div>
+  </div>
+  <!--TODO : ng-if-->
+  <div class="card-container bg-white py-3 mt-3" *ngIf="showSelectedIds">
+    <div *ngFor="let selectedId of selectedCardIds" class="badge badge-secondary">
+      <p class="text-black">{{ selectedId }}</p>
+    </div>
+  </div>
+</div>

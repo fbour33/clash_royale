@@ -1166,4 +1166,4 @@ function idToCard(id: number): Card {
   return _mapId2Card[id];
 }
 
-export { Deck, nameToUrl, nameToId, idToCard };
+export { cr_cards, Deck, nameToUrl, nameToId, idToCard };

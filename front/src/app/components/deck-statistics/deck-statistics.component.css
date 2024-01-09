@@ -39,3 +39,8 @@ td {
 td:first-child {
   font-weight: bold;
 }
+
+.title{
+  font-size: 26px;
+  color: #0c3a8c;
+}
