@@ -12,7 +12,7 @@ public class UniquePlayerWritable implements Writable, Cloneable {
     public UniquePlayerWritable(){}
     public UniquePlayerWritable(String deckId, String playerId){
         this.deckId = deckId;
-        this.playerId = deckId;
+        this.playerId = playerId;
     }
 
     @Override
@@ -46,7 +46,8 @@ public class UniquePlayerWritable implements Writable, Cloneable {
         if(obj == null || getClass() != obj.getClass())
             return false;
         UniquePlayerWritable other = (UniquePlayerWritable) obj;
-        return Objects.equals(deckId, other.deckId) && Objects.equals(playerId, other.playerId);
+        return this.deckId.equals(other.deckId) && this.playerId.equals(other.playerId);
+        //Objects.equals(deckId, other.deckId) && Objects.equals(playerId, other.playerId)
     }
 
     @Override

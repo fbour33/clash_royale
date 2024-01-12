@@ -36,14 +36,14 @@ public class DeckUniquePlayer {
     public static class DeckUniquePlayerReducer
             extends Reducer<Text,UniquePlayerWritable,Text, Text> {
 
-        private HashSet<UniquePlayerWritable> playerList = new HashSet<>();
+        private HashSet<String> playerList = new HashSet<>();
         private IntWritable nbUniquePlayer = new IntWritable();
 
         public void reduce(Text key, Iterable<UniquePlayerWritable> values,
                            Context context
         ) throws IOException, InterruptedException {
             for(UniquePlayerWritable value: values)
-                playerList.add(value.clone());
+                playerList.add(value.playerId);
 
             nbUniquePlayer.set(playerList.size());
             playerList.clear();
