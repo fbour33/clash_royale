@@ -26,7 +26,7 @@ public class DataStats {
           LocalDateTime dateTime = LocalDateTime.ofInstant(date, ZoneId.systemDefault());
           int year = dateTime.getYear();
           Month month = dateTime.getMonth();
-          int week = dateTime.get(WeekFields.of(Locale.FRANCE).weekOfWeekBasedYear());
+          int week = dateTime.get(WeekFields.of(Locale.US).weekOfWeekBasedYear());
           context.write(new Text(player.cards),
                   new SortingDeckWritable(player.cards, player.playerId, win, deckDiff, player.clanTr));
           Text id_year = new Text(player.cards + "_" + year);
