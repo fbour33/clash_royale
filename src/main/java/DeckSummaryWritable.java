@@ -61,4 +61,15 @@ public class DeckSummaryWritable implements Writable, Cloneable {
             throw new AssertionError();
         }
     }
+
+    @Override
+    public String toString() {
+        return "DeckSummary{" +
+                "deckId: " + deckId + ", " +
+                "totalWins: " + totalWins + ", " +
+                "totalUses: " + totalUses + ", " +
+                "uniquePlayers: " + uniquePlayers + ", " +
+                "highestCLanLevel: " + highestClanLevel + ", " +
+                "avgDeckStrength: " + avgDeckStrength + "}";
+    }
 }

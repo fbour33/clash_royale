@@ -1,6 +1,6 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -9,7 +9,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -34,10 +33,10 @@ public class DeckUniquePlayer {
         }
     }
     public static class DeckUniquePlayerReducer
-            extends Reducer<Text,UniquePlayerWritable,Text, Text> {
+            extends Reducer<Text,UniquePlayerWritable,Text, LongWritable> {
 
         private HashSet<String> playerList = new HashSet<>();
-        private IntWritable nbUniquePlayer = new IntWritable();
+        private LongWritable nbUniquePlayer = new LongWritable();
 
         public void reduce(Text key, Iterable<UniquePlayerWritable> values,
                            Context context
@@ -47,7 +46,7 @@ public class DeckUniquePlayer {
 
             nbUniquePlayer.set(playerList.size());
             playerList.clear();
-            context.write(key, new Text(String.valueOf(nbUniquePlayer.get())));
+            context.write(key, nbUniquePlayer);
         }
     }
     public static void main(String[] args) throws Exception {
@@ -60,8 +59,8 @@ public class DeckUniquePlayer {
         job.setMapOutputValueClass(UniquePlayerWritable.class);
         job.setReducerClass(DeckUniquePlayer.DeckUniquePlayerReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
-        job.setOutputFormatClass(TextOutputFormat.class);
+        job.setOutputValueClass(LongWritable.class);
+        job.setOutputFormatClass(SequenceFileOutputFormat.class);
         job.setInputFormatClass(SequenceFileInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));

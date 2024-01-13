@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -20,9 +21,9 @@ import java.util.Locale;
 
 public class DataStats {
   public static class DataStatsMapper
-          extends Mapper<Object, GameWritable, Text, SortingDeckWritable>{
+          extends Mapper<Object, GameWritable, Text, DeckSummaryWritable>{
 
-      private void writeSortingDeckByDate(Context context, PlayerWritable player, int win, double deckDiff, Instant date) throws IOException, InterruptedException {
+      /*private void writeSortingDeckByDate(Context context, PlayerWritable player, int win, double deckDiff, Instant date) throws IOException, InterruptedException {
           LocalDateTime dateTime = LocalDateTime.ofInstant(date, ZoneId.systemDefault());
           int year = dateTime.getYear();
           Month month = dateTime.getMonth();
@@ -38,12 +39,12 @@ public class DataStats {
                   new SortingDeckWritable(player.cards, player.playerId, win, deckDiff, player.clanTr));
           context.write(id_week,
                   new SortingDeckWritable(player.cards, player.playerId, win, deckDiff, player.clanTr));
-      }
+      }*/
 
     private void writeSortingDeck(Context context, PlayerWritable player, int win, double deckDiff)
           throws IOException, InterruptedException {
       context.write(new Text(player.cards),
-              new SortingDeckWritable(player.cards, player.playerId, win, deckDiff, player.clanTr));
+              new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff));
     }
 
     public void map(Object key, GameWritable value, Context context
@@ -56,31 +57,26 @@ public class DataStats {
     }
   }
   public static class DataStatsReducer
-          extends Reducer<Text,SortingDeckWritable,Text,DeckSummaryWritable> {
+          extends Reducer<Text,DeckSummaryWritable,Text,DeckSummaryWritable> {
 
-    private HashMap<String, Integer> uniquePlayers = new HashMap<>();
-
-    public void reduce(Text key, Iterable<SortingDeckWritable> values,
+    public void reduce(Text key, Iterable<DeckSummaryWritable> values,
                        Context context
     ) throws IOException, InterruptedException {
-        SortingDeckWritable sortedDeck = values.iterator().next().clone();
         long totalUses = 0;
         long totalWins = 0;
         long highestClanLevel = 0;
         double sumDeckStrength = 0;
-        while(values.iterator().hasNext()) {
-            uniquePlayers.put(sortedDeck.playerId, 1);
-            totalUses += 1;
-            totalWins += sortedDeck.win;
-            if(sortedDeck.win == 1 && sortedDeck.clanLevel > highestClanLevel)
-                highestClanLevel = sortedDeck.clanLevel;
-            if(sortedDeck.win == 1)
-                sumDeckStrength += sortedDeck.deckStrength;
+        for(DeckSummaryWritable deck: values) {
+            totalUses += deck.totalUses;
+            totalWins += deck.totalWins;
+            if(deck.totalWins >= 1 && deck.highestClanLevel > highestClanLevel)
+                highestClanLevel = deck.highestClanLevel;
+            if(deck.totalWins >= 1)
+                sumDeckStrength += deck.avgDeckStrength;
         }
-        DeckSummaryWritable deckSummary = new DeckSummaryWritable(sortedDeck.deckId, totalWins,
-                totalUses, uniquePlayers.size(), highestClanLevel,
-                sumDeckStrength/totalWins);
-        uniquePlayers.clear();
+        DeckSummaryWritable deckSummary = new DeckSummaryWritable(key.toString(), totalWins,
+                totalUses, 0L, highestClanLevel,
+                sumDeckStrength);
         context.write(key, deckSummary);
     }
   }
@@ -91,7 +87,8 @@ public class DataStats {
     job.setJarByClass(DataStats.class);
     job.setMapperClass(DataStatsMapper.class);
     job.setMapOutputKeyClass(Text.class);
-    job.setMapOutputValueClass(SortingDeckWritable.class);
+    job.setMapOutputValueClass(DeckSummaryWritable.class);
+    job.setCombinerClass(DataStatsReducer.class);
     job.setReducerClass(DataStatsReducer.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(DeckSummaryWritable.class);
