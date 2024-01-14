@@ -1,1 +1,2 @@
-<app-card-selection></app-card-selection>
+<app-card-selection (cardSelectionChanged)="onCardSelectionChanged($event)"></app-card-selection>
+<app-result [selectedCardIds]="selectedCardIds"></app-result>
