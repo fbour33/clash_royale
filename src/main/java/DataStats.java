@@ -23,37 +23,32 @@ public class DataStats {
   public static class DataStatsMapper
           extends Mapper<Object, GameWritable, Text, DeckSummaryWritable>{
 
-      /*private void writeSortingDeckByDate(Context context, PlayerWritable player, int win, double deckDiff, Instant date) throws IOException, InterruptedException {
+      private void writeSortingDeckByDate(Context context, PlayerWritable player, int win, double deckDiff, Instant date) throws IOException, InterruptedException {
           LocalDateTime dateTime = LocalDateTime.ofInstant(date, ZoneId.systemDefault());
           int year = dateTime.getYear();
           Month month = dateTime.getMonth();
           int week = dateTime.get(WeekFields.of(Locale.US).weekOfWeekBasedYear());
-          context.write(new Text(player.cards),
-                  new SortingDeckWritable(player.cards, player.playerId, win, deckDiff, player.clanTr));
-          Text id_year = new Text(player.cards + "_" + year);
           Text id_month = new Text(player.cards + "_" + month + "_" + year);
           Text id_week = new Text(player.cards + "_" + week + "_" + year);
-          context.write(id_year,
-                  new SortingDeckWritable(player.cards, player.playerId, win, deckDiff, player.clanTr));
           context.write(id_month,
-                  new SortingDeckWritable(player.cards, player.playerId, win, deckDiff, player.clanTr));
+                  new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff));
           context.write(id_week,
-                  new SortingDeckWritable(player.cards, player.playerId, win, deckDiff, player.clanTr));
-      }*/
+                  new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff));
+      }
 
-    private void writeSortingDeck(Context context, PlayerWritable player, int win, double deckDiff)
+    /*private void writeSortingDeck(Context context, PlayerWritable player, int win, double deckDiff)
           throws IOException, InterruptedException {
       context.write(new Text(player.cards),
               new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff));
-    }
+    }*/
 
     public void map(Object key, GameWritable value, Context context
     ) throws IOException, InterruptedException {
         GameWritable game = value.clone();
-        writeSortingDeck(context, game.player1, game.win == 1 ? 1 : 0, game.win == 1 ?
-                game.player1.deck - game.player2.deck : 0);
-        writeSortingDeck(context, game.player2, game.win == 0 ? 1 : 0,
-                game.win == 0 ? game.player2.deck - game.player1.deck : 0);
+        writeSortingDeckByDate(context, game.player1, game.win == 1 ? 1 : 0, game.win == 1 ?
+                game.player1.deck - game.player2.deck : 0, game.date);
+        writeSortingDeckByDate(context, game.player2, game.win == 0 ? 1 : 0,
+                game.win == 0 ? game.player2.deck - game.player1.deck : 0, game.date);
     }
   }
   public static class DataStatsReducer

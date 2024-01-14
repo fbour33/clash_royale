@@ -9,9 +9,16 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.temporal.WeekFields;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class DeckUniquePlayer {
 
@@ -19,11 +26,22 @@ public class DeckUniquePlayer {
             extends Mapper<Object, GameWritable, Text, UniquePlayerWritable> {
         private HashSet<UniquePlayerWritable> playerList = new HashSet<>();
 
+        private void addInHasMap(Context context, Instant date, PlayerWritable player){
+            LocalDateTime dateTime = LocalDateTime.ofInstant(date, ZoneId.systemDefault());
+            int year = dateTime.getYear();
+            Month month = dateTime.getMonth();
+            int week = dateTime.get(WeekFields.of(Locale.US).weekOfWeekBasedYear());
+            String id_month = player.cards + "_" + month + "_" + year;
+            String id_week = player.cards + "_" + week + "_" + year;
+            playerList.add(new UniquePlayerWritable(id_month, player.playerId));
+            playerList.add(new UniquePlayerWritable(id_week, player.playerId));
+        }
+
         public void map(Object key, GameWritable value, Context context
         ) throws IOException, InterruptedException {
             GameWritable game = value.clone();
-            playerList.add(new UniquePlayerWritable(game.player1.cards, game.player1.playerId));
-            playerList.add(new UniquePlayerWritable(game.player2.cards, game.player2.playerId));
+            addInHasMap(context, game.date, game.player1);
+            addInHasMap(context, game.date, game.player2);
         }
 
         protected void cleanup(Context context) throws IOException, InterruptedException {
