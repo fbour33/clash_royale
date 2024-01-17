@@ -1,12 +1,6 @@
 import java.io.IOException;
 import java.time.Instant;
-import java.util.stream.Stream;
-import java.util.logging.*;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -17,7 +11,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -92,7 +85,7 @@ public class DataCleaning {
     job.setMapOutputValueClass(GameWritable.class);
     job.setReducerClass(DataCleaningReducer.class);
     job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(Text.class);
+    job.setOutputValueClass(GameWritable.class);
     job.setOutputFormatClass(SequenceFileOutputFormat.class);
     job.setInputFormatClass(TextInputFormat.class);
     FileInputFormat.addInputPath(job, new Path(args[0]));
