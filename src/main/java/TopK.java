@@ -7,11 +7,9 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
-import java.security.Key;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +22,7 @@ public class TopK {
         private HashMap<String, TopKStructure<Long, DeckSummaryWritable>> topKMap = new HashMap<>();
 
         private String createHashMapKey(String key) {
-            String[] keys = key.split("-");
+            String[] keys = key.split("_");
             return String.join("_", Arrays.copyOfRange(keys, 1, keys.length)); //Deleting deckId
         }
 
@@ -34,7 +32,7 @@ public class TopK {
             if(value.totalUses >= 100){
                 String keyGranularity = createHashMapKey(key.toString());
                 if(!topKMap.containsKey(keyGranularity)){
-                    topKMap.put(keyGranularity, new TopKStructure<>(10, Long::compare));
+                    topKMap.put(keyGranularity, new TopKStructure<>(20, Long::compare));
                 }
 
                 topKMap.get(keyGranularity).addDeck(value.totalWins, value.clone());
@@ -57,12 +55,13 @@ public class TopK {
     public static class TopKReducer
             extends Reducer<Text,DeckSummaryWritable,Text,DeckSummaryWritable> {
 
-        private TopKStructure<Long, DeckSummaryWritable> topKStructure = new TopKStructure<>(10, Long::compare);
+
         @Override
         public void reduce(Text key, Iterable<DeckSummaryWritable> values,
                            Context context
         ) throws IOException, InterruptedException {
 
+            TopKStructure<Long, DeckSummaryWritable> topKStructure = new TopKStructure<>(20, Long::compare);
             for(DeckSummaryWritable value : values){
                 DeckSummaryWritable deck = value.clone();
                 topKStructure.addDeck(deck.totalWins, deck);
@@ -71,7 +70,6 @@ public class TopK {
             for(DeckSummaryWritable value : topKStructure.getTopK().values())
                 context.write(new Text(value.deckId), value);
 
-            topKStructure.clearTreeMap();
         }
     }
 
