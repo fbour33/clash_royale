@@ -1,0 +1,46 @@
+.card {
+  display: flex;
+  border: 1px solid #ccc;
+  margin: 10px;
+  padding: 10px;
+}
+
+.left-column {
+  flex: 1;
+}
+
+.card-row {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.card-image {
+  width: 50px;
+  height: 70px;
+}
+
+.line-break {
+  display: block;
+}
+
+.right-column {
+  flex: 1;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+td:first-child {
+  font-weight: bold;
+}
+
+.title{
+  font-size: 26px;
+  color: #0c3a8c;
+}

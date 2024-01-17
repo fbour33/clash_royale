@@ -1,0 +1,38 @@
+<!-- Dans votre fichier .component.html -->
+<mat-card class="mx-5 custom-card">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 col-12 px-2">
+        <div class="row d-flex justify-content-center">
+          <div *ngFor="let card of deck.cards" class="col-md-3 col-3 col-xs-3 col-sm-3 mb-1 p-1">
+            <img [src]="card[1]" alt="{{ card[0] }} card" class="img-fluid" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8 col-12">
+        <div class="row px-4">
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="col" class="victories-header">Victories</th>
+              <th scope="col" class="uses-header">Uses</th>
+              <th scope="col" class="unique-players-header">Unique players</th>
+              <th scope="col" class="highest-clan-level-header">Highest clan level</th>
+              <th scope="col" class="average-force-diff-header">Average force difference</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>{{ deck.victories }}</td>
+              <td>{{ deck.uses }}</td>
+              <td>{{ deck.uniquePlayers }}</td>
+              <td>{{ deck.highestClanLevel }}</td>
+              <td>{{ deck.averageDiffForce }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-card>

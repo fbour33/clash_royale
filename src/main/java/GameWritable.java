@@ -57,7 +57,6 @@ public class GameWritable implements Writable, Cloneable {
         player1.readFields(in);
         player2 = new PlayerWritable();
         player2.readFields(in);
-
     }
 
     @Override

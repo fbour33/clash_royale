@@ -17,7 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
 public class DataCleaning {
   public static class DataCleaningMapper
           extends Mapper<Object, Text, Text, GameWritable>{
-
+    
     public void map(Object key, Text value, Context context
     ) throws IOException, InterruptedException{
 
@@ -65,7 +65,6 @@ public class DataCleaning {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
     }
   }
   public static class DataCleaningReducer
