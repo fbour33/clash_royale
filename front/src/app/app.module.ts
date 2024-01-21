@@ -5,19 +5,21 @@ import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {MatTableModule} from "@angular/material/table";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatCardModule} from "@angular/material/card";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
     DeckStatisticsComponent,
     DeckCardComponent,
   ],
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatGridListModule,
-    MatCardModule,
-    NgOptimizedImage
-  ],
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatGridListModule,
+        MatCardModule,
+        NgOptimizedImage,
+        FormsModule
+    ],
   bootstrap: [],
   exports: [
     DeckStatisticsComponent

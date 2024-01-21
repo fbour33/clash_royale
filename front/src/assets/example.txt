@@ -1,0 +1,7 @@
+04242a2e323e6263_NOVEMBER_2023    DeckSummary{deckId: 04242a2e323e6263_NOVEMBER_2023, totalWins: 156, totalUses: 305, uniquePlayers: 241, highestCLanLevel: 7574, avgDeckStrength: 0.31330128205128205}
+000f175663646669_45_2023    DeckSummary{deckId: 000f175663646669_45_2023, totalWins: 214, totalUses: 355, uniquePlayers: 298, highestCLanLevel: 7757, avgDeckStrength: 0.45531542056074764}
+000f175663646669_NOVEMBER_2023    DeckSummary{deckId: 000f175663646669_NOVEMBER_2023, totalWins: 254, totalUses: 423, uniquePlayers: 324, highestCLanLevel: 7757, avgDeckStrength: 0.4402066929133858}
+4002151e41516568_45_2023    DeckSummary{deckId: 4002151e41516568_45_2023, totalWins: 332, totalUses: 549, uniquePlayers: 444, highestCLanLevel: 7757, avgDeckStrength: 0.45613704819277107}
+4002151e41516568_NOVEMBER_2023    DeckSummary{deckId: 4002151e41516568_NOVEMBER_2023, totalWins: 394, totalUses: 644, uniquePlayers: 465, highestCLanLevel: 7757, avgDeckStrength: 0.46621192893401014}
+0a0e151e264d5a65_45_2023    DeckSummary{deckId: 0a0e151e264d5a65_45_2023, totalWins: 110, totalUses: 206, uniquePlayers: 179, highestCLanLevel: 6238, avgDeckStrength: 0.42272727272727273}
+0a0e151e264d5a65_NOVEMBER_2023    DeckSummary{deckId: 0a0e151e264d5a65_NOVEMBER_2023, totalWins: 120, totalUses: 226, uniquePlayers: 188, highestCLanLevel: 6238, avgDeckStrength: 0.4296875}

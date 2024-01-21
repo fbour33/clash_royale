@@ -9,6 +9,8 @@ import { DeckService } from '../../services/deck.service';
 })
 export class DeckStatisticsComponent implements OnInit {
   public deckSummaries: DeckSummary[] = [];
+  public selectedTimeFrame = 'all';
+
 
   constructor(private deckService: DeckService) {}
 

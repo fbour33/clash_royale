@@ -1,5 +1,14 @@
 <h1 class="title text-center mt-2 p-2">Best Clash Royale Decks</h1>
-
+<div class="filter-container my-3 d-flex justify-content-end mb-2 mx-5">
+  <div class="controls d-flex mx-5 mb-4">
+    <select [(ngModel)]="selectedTimeFrame" class="form-select form-select-sm">
+      <option value="week">Week</option>
+      <option value="month">Month</option>
+      <option value="all">All Time</option>
+    </select>
+    <button class="btn custom-btn mx-2">Select</button>
+  </div>
+</div>
 <div class="mb-2 mx-5" *ngFor="let deck of deckSummaries">
   <app-deck-card [deck]="deck"></app-deck-card>
 </div>

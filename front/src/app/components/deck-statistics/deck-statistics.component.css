@@ -44,3 +44,8 @@ td:first-child {
   font-size: 26px;
   color: #0c3a8c;
 }
+
+.custom-btn{
+  background-color: #0c3a8c;
+  color:white;
+}

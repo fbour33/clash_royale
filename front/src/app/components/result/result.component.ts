@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
+import {StatisticsService} from "../../services/statistics.service";
 
 @Component({
   selector: 'app-result',
@@ -16,21 +17,20 @@ export class ResultComponent {
 
   ngramStats: any[] = [];
 
-  constructor(private statsService: StatsService) {}
+  constructor(private statsService: StatisticsService) {}
 
   ngOnInit() {
     this.getNgramStats();
   }
 
   getNgramStats() {
-    // La méthode getStats devrait être définie dans votre StatsService pour récupérer les données
-    this.statsService.getStats().subscribe(
+    /*this.statsService.getStats().subscribe(
       data => {
         this.ngramStats = data;
       },
       error => {
         console.error('There was an error!', error);
       }
-    );
+    );*/
   }
 }
