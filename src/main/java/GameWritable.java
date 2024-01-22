@@ -1,4 +1,3 @@
-import jdk.internal.org.jline.utils.ClosedException;
 import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;

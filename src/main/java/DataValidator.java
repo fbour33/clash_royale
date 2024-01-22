@@ -22,9 +22,15 @@ public class DataValidator {
     }
 
     public static boolean checkData(JSONObject game) throws JSONException {
-        if(game.getString("cards").length() > 18 && !game.getString("cards").endsWith("6e"))
+        if(game.getString("cards").length() < 16 || game.getString("cards2").length() < 16)
             return false;
-        if(game.getString("cards2").length() > 18 && !game.getString("cards2").endsWith("6e")) //To keep new meta with evo
+        if(game.getString("cards").length()%2 != 0 || game.getString("cards2").length()%2 != 0)
+            return false;
+        if(game.getString("cards").length() > 18 || game.getString("cards2").length() > 18)
+            return false;
+        if(game.getString("cards").length() == 18 && !game.getString("cards2").endsWith("6e"))
+            return false;
+        if(game.getString("cards2").length() == 18 && !game.getString("cards2").endsWith("6e")) //To keep new meta with evo
             return false;
         if(game.getDouble("deck") == 0 && game.getDouble("deck2") == 0)
             return false;
@@ -51,6 +57,16 @@ public class DataValidator {
         Collections.sort(hexPairs);
 
         return firstPair + String.join("", hexPairs);
+    }
+
+    public static String sortCardsWithoutFirstPair(String cards){
+
+        List<String> hexPairs = new ArrayList<>();
+        for (int i = 0; i < cards.length(); i += 2)
+            hexPairs.add(cards.substring(i, i + 2));
+        Collections.sort(hexPairs);
+
+        return String.join("", hexPairs);
     }
 
 
