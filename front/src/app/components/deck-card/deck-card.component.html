@@ -26,7 +26,8 @@
               <td>{{ deck.uses }}</td>
               <td>{{ deck.uniquePlayers }}</td>
               <td>{{ deck.highestClanLevel }}</td>
-              <td>{{ deck.averageDiffForce }}</td>
+              <td>{{ deck.averageDiffForce * 100 | number: '1.0-2' }}%</td>
+
             </tr>
             </tbody>
           </table>

@@ -6,6 +6,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatCardModule} from "@angular/material/card";
 import {FormsModule} from "@angular/forms";
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,8 +19,10 @@ import {FormsModule} from "@angular/forms";
         MatGridListModule,
         MatCardModule,
         NgOptimizedImage,
-        FormsModule
+        FormsModule,
+        HttpClientModule
     ],
+  providers: [ HttpClientModule, ],
   bootstrap: [],
   exports: [
     DeckStatisticsComponent

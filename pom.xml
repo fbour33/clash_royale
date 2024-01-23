@@ -46,7 +46,7 @@
   			<configuration>
   				<archive>
   					<manifest>
-  						<mainClass>Spark</mainClass>
+  						<mainClass>TopK</mainClass>
   					</manifest>
   				</archive>
   			</configuration>
