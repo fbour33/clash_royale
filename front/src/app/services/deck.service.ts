@@ -44,7 +44,7 @@ export class DeckService {
          uniquePlayers: item.uniquePlayers || 0,
          highestClanLevel: item.highestClanLevel || 0,
          averageDiffForce: item.avgDeckStrength || 0,
-         cards: new Deck(item.deckId).cards(), // Assuming Deck constructor takes deckId
+         cards: new Deck(item.deckId).cards(),
        }));
      }
 }

@@ -1,6 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {StatisticsService} from "../../services/statistics.service";
+import {Card} from "../../models/card";
+import {Deck} from "../../../assets/deck-manager";
 
 @Component({
   selector: 'app-result',
@@ -13,24 +15,13 @@ import {StatisticsService} from "../../services/statistics.service";
   styleUrl: './result.component.css'
 })
 export class ResultComponent {
-  @Input() selectedCardIds: number[] = [];
-
+  @Input() ngrams: string ='';
   ngramStats: any[] = [];
 
   constructor(private statsService: StatisticsService) {}
 
   ngOnInit() {
-    this.getNgramStats();
+    console.log("test todo get ngrams value");
   }
 
-  getNgramStats() {
-    /*this.statsService.getStats().subscribe(
-      data => {
-        this.ngramStats = data;
-      },
-      error => {
-        console.error('There was an error!', error);
-      }
-    );*/
-  }
 }

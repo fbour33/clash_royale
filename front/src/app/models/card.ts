@@ -1,4 +1,4 @@
-export class DeckCard {
+export type Card = {
  name: string;
  id: number;
  maxLevel: number;

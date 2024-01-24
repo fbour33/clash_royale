@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
+import { Card } from "../../models/card";
 
 @Injectable({
   providedIn: 'root',
 })
 export class CardSelectionService {
-  private selectedCardIds: number[] = [];
+  private selectedCards: Card[] = [];
 
-  getSelectedCardIds(): number[] {
-    return this.selectedCardIds;
+  getSelectedCards(): Card[] {
+    return this.selectedCards;
   }
 
-  setSelectedCardIds(ids: number[]) {
-    this.selectedCardIds = ids;
+  setSelectedCards(cards: Card[]) {
+    this.selectedCards = cards;
   }
 }

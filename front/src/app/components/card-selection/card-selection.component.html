@@ -5,8 +5,8 @@
       <img
         [src]="card.iconUrls.medium"
         alt="{{ card.name }}"
-        (click)="toggleCardSelection(card.id)"
-        [class.selected]="selectedCardIds.includes(card.id)"
+        (click)="toggleCardSelection(card)"
+        [class.selected]="selectedCards.includes(card)"
         class="small"
       />
     </div>
