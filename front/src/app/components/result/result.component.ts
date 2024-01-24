@@ -1,27 +1,56 @@
-import {Component, Input} from '@angular/core';
-import {NgForOf, NgIf} from "@angular/common";
-import {StatisticsService} from "../../services/statistics.service";
-import {Card} from "../../models/card";
-import {Deck} from "../../../assets/deck-manager";
+import { Component, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import Chart from 'chart.js/auto';
+import { NgForOf, NgIf } from "@angular/common";
+import { NgramService } from '../../services/ngram.service';
 
 @Component({
   selector: 'app-result',
   standalone: true,
-  imports: [
-    NgForOf,
-    NgIf
-  ],
+  imports: [NgForOf, NgIf],
   templateUrl: './result.component.html',
-  styleUrl: './result.component.css'
+  styleUrls: ['./result.component.css']
 })
-export class ResultComponent {
-  @Input() ngrams: string ='';
-  ngramStats: any[] = [];
+export class ResultComponent implements AfterViewInit, OnChanges {
+  @Input() ngrams: string = '';
+  title = 'ng-chart';
+  chart: any = [];
 
-  constructor(private statsService: StatisticsService) {}
+  constructor(private ngramService: NgramService) {}
 
-  ngOnInit() {
-    console.log("test todo get ngrams value");
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['ngrams'] && changes['ngrams'].currentValue) {
+      this.updateChart();
+    }
   }
 
+
+  private updateChart() {
+    //Pour tester, remplacer this.ngrams par '070f143b4041576b' (dans notre ngrams.json)
+    const { labels, data } = this.ngramService.getChartData(this.ngrams);
+    this.chart = new Chart('myChart', {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Total win',
+            data: data,
+            borderWidth: 1,
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }
+
+  ngAfterViewInit() {
+    this.updateChart();
+  }
 }

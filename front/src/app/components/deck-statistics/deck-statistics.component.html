@@ -3,29 +3,29 @@
   <div class="controls d-flex item-center mx-5 mb-4">
     <div class="form-check form-check-inline">
       <input class="form-check-input" type="radio" name="timeFrameOptions" id="weekOption" [(ngModel)]="selectedTimeFrame" value="week" (change)="onTimeFrameChange()">
-      <label class="form-check-label" for="weekOption">Semaine</label>
+      <label class="form-check-label" for="weekOption">Week</label>
     </div>
     <div class="form-check form-check-inline">
       <input class="form-check-input" type="radio" name="timeFrameOptions" id="monthOption" [(ngModel)]="selectedTimeFrame" value="month" (change)="onTimeFrameChange()">
-      <label class="form-check-label" for="monthOption">Mois</label>
+      <label class="form-check-label" for="monthOption">Month</label>
     </div>
 
     <select [(ngModel)]="selectedWeek" class="form-select form-select-sm" [disabled]="selectedTimeFrame !== 'week'">
-      <option *ngFor="let week of weeks" [value]="week">Semaine {{ week }}</option>
+      <option *ngFor="let week of weeks" [value]="week">Week {{ week }}</option>
     </select>
     <select [(ngModel)]="selectedMonth" class="form-select form-select-sm" [disabled]="selectedTimeFrame !== 'month'">
-      <option value="JANUARY">Janvier</option>
-      <option value="FEBRUARY">Février</option>
-      <option value="MARCH">Mars</option>
-      <option value="APRIL">Avril</option>
-      <option value="MAY">Mai</option>
-      <option value="JUNE">Juin</option>
-      <option value="JULY">Juillet</option>
-      <option value="AUGUST">Août</option>
-      <option value="SEPTEMBER">Septembre</option>
-      <option value="OCTOBER">Octobre</option>
-      <option value="NOVEMBER">Novembre</option>
-      <option value="DECEMBER">Décembre</option>
+      <option value="JANUARY">January</option>
+      <option value="FEBRUARY">February</option>
+      <option value="MARCH">March</option>
+      <option value="APRIL">April</option>
+      <option value="MAY">May</option>
+      <option value="JUNE">June</option>
+      <option value="JULY">July</option>
+      <option value="AUGUST">August</option>
+      <option value="SEPTEMBER">September</option>
+      <option value="OCTOBER">October</option>
+      <option value="NOVEMBER">November</option>
+      <option value="DECEMBER">December</option>
     </select>
     <select [(ngModel)]="selectedYear" class="form-select form-select-sm">
       <option value="2023" selected>2023</option>
@@ -40,6 +40,6 @@
   <app-deck-card [deck]="deck"></app-deck-card>
 </div>
 <div *ngIf="deckSummaries.length === 0" class="text-center mt-3">
-  <p class="text-muted">Aucun deck à afficher. Veuillez choisir une période et cliquer sur 'Select'.</p>
+  <p class="text-muted">No deck to display. Please select a period and click on 'Select'.</p>
 </div>
 

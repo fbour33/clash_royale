@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { DeckSummary } from '../models/deck-summary';
-import rawData from '../../assets/example.json';
+import jsonData from '../../assets/example.json';
 import { Deck } from '../../assets/deck-manager';
 
 
@@ -18,7 +18,7 @@ type DeckData = {
   [key: string]: DeckDetails[];
 };
 
-const deckSummariesData: DeckData[] = rawData as unknown as DeckData[];
+const deckSummariesData: DeckData[] = jsonData as unknown as DeckData[];
 
 @Injectable({
   providedIn: 'root',

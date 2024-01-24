@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { DeckStatisticsComponent } from './components/deck-statistics/deck-statistics.component';
 import {DeckCardComponent} from "./components/deck-card/deck-card.component";
+import {ResultComponent} from "./components/result/result.component";
 import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {MatTableModule} from "@angular/material/table";
 import {MatGridListModule} from "@angular/material/grid-list";
