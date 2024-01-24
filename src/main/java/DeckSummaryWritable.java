@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;
@@ -63,14 +64,20 @@ public class DeckSummaryWritable implements Writable, Cloneable, Serializable {
         }
     }
 
+//    @Override
+//    public String toString() {
+//        return "{" +
+//                "deckId: " + deckId + ", " +
+//                "totalWins: " + totalWins + ", " +
+//                "totalUses: " + totalUses + ", " +
+//                "uniquePlayers: " + uniquePlayers + ", " +
+//                "highestCLanLevel: " + highestClanLevel + ", " +
+//                "avgDeckStrength: " + avgDeckStrength + "}";
+//    }
+
     @Override
     public String toString() {
-        return "DeckSummary{" +
-                "deckId: " + deckId + ", " +
-                "totalWins: " + totalWins + ", " +
-                "totalUses: " + totalUses + ", " +
-                "uniquePlayers: " + uniquePlayers + ", " +
-                "highestCLanLevel: " + highestClanLevel + ", " +
-                "avgDeckStrength: " + avgDeckStrength + "}";
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

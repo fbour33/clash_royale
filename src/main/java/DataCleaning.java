@@ -78,7 +78,7 @@ public class DataCleaning {
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "DataCleaning");
-    job.setNumReduceTasks(1);
+    job.setNumReduceTasks(3);
     job.setJarByClass(DataCleaning.class);
     job.setMapperClass(DataCleaningMapper.class);
     job.setMapOutputKeyClass(Text.class);

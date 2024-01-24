@@ -78,7 +78,7 @@ public class DataStats {
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "DataStats");
-    job.setNumReduceTasks(1);
+    job.setNumReduceTasks(5);
     job.setJarByClass(DataStats.class);
     job.setMapperClass(DataStatsMapper.class);
     job.setMapOutputKeyClass(Text.class);

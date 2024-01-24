@@ -1,5 +1,7 @@
+import com.google.gson.Gson;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -8,6 +10,9 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -53,8 +58,14 @@ public class TopK {
     }
 
     public static class TopKReducer
-            extends Reducer<Text,DeckSummaryWritable,Text,DeckSummaryWritable> {
+            extends Reducer<Text,DeckSummaryWritable,NullWritable,Text> {
 
+        private Gson gson = new Gson();
+
+        private String getCards(String deckId){
+            String[] parseDeck = deckId.split("_");
+            return parseDeck[0];
+        }
 
         @Override
         public void reduce(Text key, Iterable<DeckSummaryWritable> values,
@@ -66,9 +77,17 @@ public class TopK {
                 DeckSummaryWritable deck = value.clone();
                 topKStructure.addDeck(deck.totalWins, deck);
             }
+            JsonArray jsonArray = new JsonArray();
+            for(DeckSummaryWritable value : topKStructure.getTopK().values()) {
+                DeckSummaryWritable deck = value.clone();
+                deck.deckId = getCards(deck.deckId);
+                JsonObject jsonValue = gson.fromJson(deck.toString(), JsonObject.class);
+                jsonArray.add(jsonValue);
+            }
+            JsonObject outputJson = new JsonObject();
+            outputJson.add(key.toString(), jsonArray);
 
-            for(DeckSummaryWritable value : topKStructure.getTopK().values())
-                context.write(new Text(value.deckId), value);
+            context.write(NullWritable.get(), new Text(gson.toJson(outputJson)));
 
         }
     }
@@ -82,8 +101,8 @@ public class TopK {
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DeckSummaryWritable.class);
         job.setReducerClass(TopK.TopKReducer.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DeckSummaryWritable.class);
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(Text.class);
         job.setOutputFormatClass(TextOutputFormat.class);
         job.setInputFormatClass(SequenceFileInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
