@@ -14,7 +14,7 @@ export class DeckStatisticsComponent implements OnInit {
   public selectedTimeFrame = 'year';
   public selectedWeek: string = "";
   public selectedMonth: string = "";
-  public selectedYear = new Date().getFullYear().toString();
+  public selectedYear = '2023';
   weeks = Array.from({length: 52}, (_, i) => i + 1);
 
   constructor(private deckService: DeckService) {}
@@ -26,7 +26,7 @@ export class DeckStatisticsComponent implements OnInit {
   onTimeFrameChange(): void {
     this.selectedWeek = this.selectedTimeFrame === 'week' ? this.selectedWeek : "";
     this.selectedMonth = this.selectedTimeFrame === 'month' ? this.selectedMonth : "";
-    this.selectedYear = this.selectedTimeFrame === 'year' ? this.selectedYear : new Date().getFullYear().toString();
+    this.selectedYear = this.selectedTimeFrame === 'year' ? this.selectedYear : '2023';
     this.updateKeyAndFetchDecks();
   }
 
@@ -50,7 +50,7 @@ export class DeckStatisticsComponent implements OnInit {
   private getDeckSummaries(key: string, sortOption: string): void {
     this.deckService.getDeckSummariesByKeyAndSort(key, sortOption).subscribe(
       (data) => {
-        this.deckSummaries = data;
+        this.deckSummaries = data.reverse();
         console.log('Deck Summaries:', this.deckSummaries);
       },
       (error) => {

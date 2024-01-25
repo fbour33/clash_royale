@@ -1,9 +1,11 @@
-<div class="sort-option-container my-3 d-flex justify-content-end mb-2 mx-5">
-  <select [(ngModel)]="selectedSortOption" class="form-select form-select-sm" (change)="onSortOptionChange()">
+<div class="sort-option-container my-3 d-flex align-items-center justify-content-center mb-2 mx-5">
+  <label class="form-label mr-2 px-4" for="sortOptionSelect">Please select the ranking: </label>
+  <select [(ngModel)]="selectedSortOption" class="form-select form-select-sm custom-select-width" id="sortOptionSelect" (change)="onSortOptionChange()">
     <option value="winrate">Sort by Winrate</option>
     <option value="highestClanLevel">Sort by Highest Clan Level</option>
   </select>
 </div>
+
 
 <h1 class="title text-center mt-2 p-2">
   Top 20 Best Decks by {{ selectedSortOption === 'winrate' ? 'Winrate' : 'Highest Clan Level' }}

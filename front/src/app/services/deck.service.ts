@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { DeckSummary } from '../models/deck-summary';
 import winrateData from '../../assets/winRate.json';
-import highestClanLevelData from '../../assets/highestClan.json';
+import highestClanLevelData from '../../assets/highestClanTrophee.json';
 import { Deck } from '../../assets/deck-manager';
 
 
