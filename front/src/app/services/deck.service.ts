@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { DeckSummary } from '../models/deck-summary';
-import jsonData from '../../assets/example.json';
+import winrateData from '../../assets/winRate.json';
+import highestClanLevelData from '../../assets/highestClan.json';
 import { Deck } from '../../assets/deck-manager';
 
 
@@ -12,13 +13,12 @@ type DeckDetails = {
   uniquePlayers: number;
   highestClanLevel: number;
   avgDeckStrength: number;
+  winRate: number;
 };
 
 type DeckData = {
   [key: string]: DeckDetails[];
 };
-
-const deckSummariesData: DeckData[] = jsonData as unknown as DeckData[];
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +27,9 @@ export class DeckService {
 
   constructor() {}
 
-    public getDeckSummariesByKey(key: string): Observable<DeckSummary[]> {
+    public getDeckSummariesByKeyAndSort(key: string, sortOption: string): Observable<DeckSummary[]> {
+       const dataset = sortOption === 'winrate' ? winrateData : highestClanLevelData;
+       const deckSummariesData: DeckData[] = dataset as unknown as DeckData[];
        const dataItem = deckSummariesData.find(item => item[key] !== undefined);
        if (!dataItem || !dataItem[key]) {
          return of([]);
@@ -44,6 +46,7 @@ export class DeckService {
          uniquePlayers: item.uniquePlayers || 0,
          highestClanLevel: item.highestClanLevel || 0,
          averageDiffForce: item.avgDeckStrength || 0,
+         winRate: item.winRate || 0,
          cards: new Deck(item.deckId).cards(),
        }));
      }

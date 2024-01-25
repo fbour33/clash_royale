@@ -18,6 +18,7 @@
               <th scope="col" class="unique-players-header">Unique players</th>
               <th scope="col" class="highest-clan-level-header">Highest clan level</th>
               <th scope="col" class="average-force-diff-header">Average force difference</th>
+              <th scope="col" class="average-force-diff-header">Win rate</th>
             </tr>
             </thead>
             <tbody>
@@ -27,7 +28,7 @@
               <td>{{ deck.uniquePlayers }}</td>
               <td>{{ deck.highestClanLevel }}</td>
               <td>{{ deck.averageDiffForce * 100 | number: '1.0-2' }}%</td>
-
+              <td>{{ deck.winRate * 100 | number: '1.0-2' }}%</td>
             </tr>
             </tbody>
           </table>

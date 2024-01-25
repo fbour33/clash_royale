@@ -1,4 +1,13 @@
-<h1 class="title text-center mt-2 p-2">Best Clash Royale Decks</h1>
+<div class="sort-option-container my-3 d-flex justify-content-end mb-2 mx-5">
+  <select [(ngModel)]="selectedSortOption" class="form-select form-select-sm" (change)="onSortOptionChange()">
+    <option value="winrate">Sort by Winrate</option>
+    <option value="highestClanLevel">Sort by Highest Clan Level</option>
+  </select>
+</div>
+
+<h1 class="title text-center mt-2 p-2">
+  Top 20 Best Decks by {{ selectedSortOption === 'winrate' ? 'Winrate' : 'Highest Clan Level' }}
+</h1>
 <div class="filter-container my-3 d-flex justify-content-end mb-2 mx-5">
   <div class="controls d-flex item-center mx-5 mb-4">
     <div class="form-check form-check-inline">
@@ -9,7 +18,10 @@
       <input class="form-check-input" type="radio" name="timeFrameOptions" id="monthOption" [(ngModel)]="selectedTimeFrame" value="month" (change)="onTimeFrameChange()">
       <label class="form-check-label" for="monthOption">Month</label>
     </div>
-
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="timeFrameOptions" id="yearOption" [(ngModel)]="selectedTimeFrame" value="year" (change)="onTimeFrameChange()">
+      <label class="form-check-label" for="yearOption">Year</label>
+    </div>
     <select [(ngModel)]="selectedWeek" class="form-select form-select-sm" [disabled]="selectedTimeFrame !== 'week'">
       <option *ngFor="let week of weeks" [value]="week">Week {{ week }}</option>
     </select>
@@ -27,13 +39,11 @@
       <option value="NOVEMBER">November</option>
       <option value="DECEMBER">December</option>
     </select>
-    <select [(ngModel)]="selectedYear" class="form-select form-select-sm">
-      <option value="2023" selected>2023</option>
-      <option value="2024">2024</option>
+    <select [(ngModel)]="selectedYear" class="form-select form-select-sm" [disabled]="selectedTimeFrame === ''">
+      <option *ngFor="let year of [2023, 2024]" [value]="year">{{ year }}</option>
     </select>
 
-    <button class="btn custom-btn mx-2" (click)="submitSelection()">Select</button>
-
+    <button class="btn custom-btn mx-2" (click)="updateKeyAndFetchDecks()">Select</button>
   </div>
 </div>
 <div class="mb-2 mx-5" *ngFor="let deck of deckSummaries">
@@ -42,4 +52,3 @@
 <div *ngIf="deckSummaries.length === 0" class="text-center mt-3">
   <p class="text-muted">No deck to display. Please select a period and click on 'Select'.</p>
 </div>
-

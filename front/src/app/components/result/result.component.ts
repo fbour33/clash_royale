@@ -26,7 +26,7 @@ export class ResultComponent implements AfterViewInit, OnChanges {
 
   private updateChart() {
     //Pour tester, remplacer this.ngrams par '070f143b4041576b' (dans notre ngrams.json)
-    const { labels, data } = this.ngramService.getChartData(this.ngrams);
+    const { labels, data } = this.ngramService.getChartData('070f143b4041576b');
     this.chart = new Chart('myChart', {
       type: 'line',
       data: {

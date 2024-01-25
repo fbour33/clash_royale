@@ -5,5 +5,6 @@ export interface DeckSummary {
   uniquePlayers: number;
   highestClanLevel: number;
   averageDiffForce: number;
+  winRate: number;
   cards: any[];
 }
