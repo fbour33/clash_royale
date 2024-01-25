@@ -25,7 +25,7 @@ export class CardSelectionComponent {
   toggleCardSelection(selectedCard: Card) {
     const index = this.selectedCards.findIndex(card => card.id === selectedCard.id);
 
-    if (index === -1 && this.selectedCards.length < 8) {
+    if (index === -1 && this.selectedCards.length < 3) {
       this.selectedCards.push(selectedCard);
     } else if (index !== -1) {
       this.selectedCards.splice(index, 1);
