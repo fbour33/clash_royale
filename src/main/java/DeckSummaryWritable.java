@@ -14,17 +14,19 @@ public class DeckSummaryWritable implements Writable, Cloneable, Serializable {
     public long uniquePlayers;
     public long highestClanLevel;
     public double avgDeckStrength;
+    public double winRate;
 
     public DeckSummaryWritable(){}
 
     public DeckSummaryWritable(String deckId, long totalWins, long totalUses,
-                               long uniquePlayers, long highestClanLevel, double avgDeckStrength){
+                               long uniquePlayers, long highestClanLevel, double avgDeckStrength, double winRate){
         this.deckId = deckId;
         this.totalWins = totalWins;
         this.totalUses = totalUses;
         this.uniquePlayers = uniquePlayers;
         this.highestClanLevel = highestClanLevel;
         this.avgDeckStrength = avgDeckStrength;
+        this.winRate = winRate;
     }
 
 
@@ -36,6 +38,7 @@ public class DeckSummaryWritable implements Writable, Cloneable, Serializable {
         out.writeLong(uniquePlayers);
         out.writeLong(highestClanLevel);
         out.writeDouble(avgDeckStrength);
+        out.writeDouble(winRate);
     }
 
     @Override
@@ -46,6 +49,7 @@ public class DeckSummaryWritable implements Writable, Cloneable, Serializable {
         uniquePlayers = in.readLong();
         highestClanLevel = in.readLong();
         avgDeckStrength = in.readDouble();
+        winRate = in.readDouble();
     }
 
     @Override
@@ -58,22 +62,12 @@ public class DeckSummaryWritable implements Writable, Cloneable, Serializable {
             clone.uniquePlayers = this.uniquePlayers;
             clone.highestClanLevel = this.highestClanLevel;
             clone.avgDeckStrength = this.avgDeckStrength;
+            clone.winRate = this.winRate;
             return clone;
         }catch(CloneNotSupportedException e){
             throw new AssertionError();
         }
     }
-
-//    @Override
-//    public String toString() {
-//        return "{" +
-//                "deckId: " + deckId + ", " +
-//                "totalWins: " + totalWins + ", " +
-//                "totalUses: " + totalUses + ", " +
-//                "uniquePlayers: " + uniquePlayers + ", " +
-//                "highestCLanLevel: " + highestClanLevel + ", " +
-//                "avgDeckStrength: " + avgDeckStrength + "}";
-//    }
 
     @Override
     public String toString() {

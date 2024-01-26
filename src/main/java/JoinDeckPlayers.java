@@ -25,6 +25,8 @@ public class JoinDeckPlayers {
                 DeckSummaryWritable deck = value.clone();
                 if(deck.totalWins != 0)
                     deck.avgDeckStrength = deck.avgDeckStrength/ deck.totalWins;
+                if(deck.totalUses != 0)
+                    deck.winRate = (double) deck.totalWins / deck.totalUses;
                 context.write(key, deck);
             }
 
@@ -37,7 +39,7 @@ public class JoinDeckPlayers {
         public void map(Text key, LongWritable value, Context context
         ) throws IOException, InterruptedException {
 
-            context.write(key, new DeckSummaryWritable(key.toString(), 0L, 0L, value.get(), 0L, 0D));
+            context.write(key, new DeckSummaryWritable(key.toString(), 0L, 0L, value.get(), 0L, 0D, 0D));
         }
     }
 
@@ -65,7 +67,7 @@ public class JoinDeckPlayers {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "JoinDeckPlayers");
-        job.setNumReduceTasks(1);
+        job.setNumReduceTasks(3);
         job.setJarByClass(JoinDeckPlayers.class);
         MultipleInputs.addInputPath(job, new Path(args[0]), SequenceFileInputFormat.class, JoinMapperDeck.class);
         MultipleInputs.addInputPath(job, new Path(args[1]), SequenceFileInputFormat.class, JoinMapperPlayer.class);

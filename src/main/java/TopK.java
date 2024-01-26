@@ -24,7 +24,7 @@ public class TopK {
     public static class TopKMapper
             extends Mapper<Text, DeckSummaryWritable, Text, DeckSummaryWritable> {
 
-        private HashMap<String, TopKStructure<Long, DeckSummaryWritable>> topKMap = new HashMap<>();
+        private HashMap<String, TopKStructure<Double, DeckSummaryWritable>> topKMap = new HashMap<>();
 
         private String createHashMapKey(String key) {
             String[] keys = key.split("_");
@@ -37,19 +37,19 @@ public class TopK {
             if(value.totalUses >= 100){
                 String keyGranularity = createHashMapKey(key.toString());
                 if(!topKMap.containsKey(keyGranularity)){
-                    topKMap.put(keyGranularity, new TopKStructure<>(20, Long::compare));
+                    topKMap.put(keyGranularity, new TopKStructure<>(20, Double::compare));
                 }
 
-                topKMap.get(keyGranularity).addDeck(value.totalWins, value.clone());
+                topKMap.get(keyGranularity).addDeck((double) value.highestClanLevel, value.clone());
             }
 
         }
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
-            for(Map.Entry<String, TopKStructure<Long, DeckSummaryWritable>> entry : topKMap.entrySet()) {
+            for(Map.Entry<String, TopKStructure<Double, DeckSummaryWritable>> entry : topKMap.entrySet()) {
                 String compositeKey = entry.getKey();
-                TopKStructure<Long, DeckSummaryWritable> topkStructure = entry.getValue();
+                TopKStructure<Double, DeckSummaryWritable> topkStructure = entry.getValue();
                 for (DeckSummaryWritable value : topkStructure.topK.values()) {
                     context.write(new Text(compositeKey), value);
                 }
@@ -72,10 +72,10 @@ public class TopK {
                            Context context
         ) throws IOException, InterruptedException {
 
-            TopKStructure<Long, DeckSummaryWritable> topKStructure = new TopKStructure<>(20, Long::compare);
+            TopKStructure<Double, DeckSummaryWritable> topKStructure = new TopKStructure<>(20, Double::compare);
             for(DeckSummaryWritable value : values){
                 DeckSummaryWritable deck = value.clone();
-                topKStructure.addDeck(deck.totalWins, deck);
+                topKStructure.addDeck((double) deck.highestClanLevel, deck);
             }
             JsonArray jsonArray = new JsonArray();
             for(DeckSummaryWritable value : topKStructure.getTopK().values()) {

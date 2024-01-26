@@ -6,7 +6,7 @@ import java.util.List;
 public class CardCombinations {
 //    public static void main(String[] args) {
 //        String[] cards = {"01", "23", "45", "67", "89", "ab", "cd", "ef"}; // Vos cartes
-//        List<String> allCombinations = getAllCombinations(cards);
+//        List<String> allCombinations = getTwoAndThreeCombinations("01cd2389ab4567ef");
 //
 //        for (String combination : allCombinations) {
 //            System.out.println(combination);
@@ -16,26 +16,26 @@ public class CardCombinations {
 //
 //    }
 
-//    public static String[] divideDeckIntoPairs(String deckId){
-//        ArrayList<String> hexPairs = new ArrayList<>();
-//        for(int i = 0; i < 16; i += 2){
-//            hexPairs.add(deckId.substring(i, i + 2));
-//        }
-//        Collections.sort(hexPairs);
-//        return hexPairs.toArray(new String[0]);
-//    }
+    /* Divide cards (deckId) into pairs and sort result array */
+    private static String[] divideDeckIntoPairs(String deckId){
+        ArrayList<String> hexPairs = new ArrayList<>();
+        for(int i = 0; i < deckId.length(); i += 2){
+            hexPairs.add(deckId.substring(i, i + 2));
+        }
+        Collections.sort(hexPairs);
+        return hexPairs.toArray(new String[0]);
+    }
 
-    public static List<String> getAllCombinations(String[] cards) {
+    public static List<String> getAllCombinations(String deckId) {
+        String[] cards =  divideDeckIntoPairs(deckId);
         List<String> result = new ArrayList<>();
 
-        // Le nombre total de combinaisons est 2^n (où n est le nombre de cartes)
         int total = 1 << cards.length;
 
-        // Générer chaque combinaison possible
         for (int i = 0; i < total; i++) {
             StringBuilder combination = new StringBuilder();
             for (int j = 0; j < cards.length; j++) {
-                // (i >> j) & 1) vérifie si le j-ème bit de i est défini
+
                 if (((i >> j) & 1) != 0) {
                     combination.append(cards[j]);
                 }
@@ -44,5 +44,24 @@ public class CardCombinations {
         }
 
         return result;
+    }
+
+    public static List<String> getTwoAndThreeCombinations(String deckId) {
+        String[] cards =  divideDeckIntoPairs(deckId);
+        List<String> combinations = new ArrayList<>();
+        combine(cards, 0, 2, "", combinations);
+        combine(cards, 0, 3, "", combinations);
+        return combinations;
+    }
+
+    private static void combine(String[] cards, int start, int combinationSize, String current, List<String> combinations) {
+        if (combinationSize == 0) {
+            combinations.add(current.trim());
+            return;
+        }
+
+        for (int i = start; i <= cards.length - combinationSize; i++) {
+            combine(cards, i + 1, combinationSize - 1, current + cards[i], combinations);
+        }
     }
 }

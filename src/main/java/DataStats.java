@@ -30,17 +30,15 @@ public class DataStats {
           int week = dateTime.get(WeekFields.of(Locale.US).weekOfWeekBasedYear());
           Text id_month = new Text(player.cards + "_" + month + "_" + year);
           Text id_week = new Text(player.cards + "_" + week + "_" + year);
+          Text id_year = new Text(player.cards + "_" + year);
+          context.write(id_year,
+                  new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff, 0));
           context.write(id_month,
-                  new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff));
+                  new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff, 0));
           context.write(id_week,
-                  new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff));
-      }
+                  new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff, 0));
 
-    /*private void writeSortingDeck(Context context, PlayerWritable player, int win, double deckDiff)
-          throws IOException, InterruptedException {
-      context.write(new Text(player.cards),
-              new DeckSummaryWritable(player.cards, win, 1,  0, player.clanTr, deckDiff));
-    }*/
+      }
 
     public void map(Object key, GameWritable value, Context context
     ) throws IOException, InterruptedException {
@@ -71,14 +69,14 @@ public class DataStats {
         }
         DeckSummaryWritable deckSummary = new DeckSummaryWritable(key.toString(), totalWins,
                 totalUses, 0L, highestClanLevel,
-                sumDeckStrength);
+                sumDeckStrength, 0);
         context.write(key, deckSummary);
     }
   }
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "DataStats");
-    job.setNumReduceTasks(5);
+    job.setNumReduceTasks(4);
     job.setJarByClass(DataStats.class);
     job.setMapperClass(DataStatsMapper.class);
     job.setMapOutputKeyClass(Text.class);

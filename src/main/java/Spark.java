@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import org.apache.spark.HashPartitioner;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -8,23 +9,11 @@ import scala.Tuple2;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZoneId;
 import java.time.temporal.WeekFields;
 import java.util.*;
 
 public class Spark {
-
-
-    /* Divide cards (deckId) into pairs and sort result array */
-    private static String[] divideDeckIntoPairs(String deckId){
-        ArrayList<String> hexPairs = new ArrayList<>();
-        for(int i = 0; i < deckId.length(); i += 2){
-            hexPairs.add(deckId.substring(i, i + 2));
-        }
-        Collections.sort(hexPairs);
-        return hexPairs.toArray(new String[0]);
-    }
 
     /* Concatenate key with date granularity */
     private static String keyWithGranularity(String card, Instant date){
@@ -37,8 +26,8 @@ public class Spark {
 
     /* Get all the card combinations */
     private static List<String> createKeys(String deckId){
-        String[] hexPairs =  divideDeckIntoPairs(deckId);
-        return CardCombinations.getAllCombinations(hexPairs);
+        return CardCombinations.getTwoAndThreeCombinations(deckId);
+        //return CardCombinations.getAllCombinations(deckId);
     }
 
     public static void main(String[] args) throws Exception {
@@ -49,8 +38,8 @@ public class Spark {
 
         JavaRDD<GameWritable> gameData = context.sequenceFile(args[0], Text.class, GameWritable.class).values();
 
-        int nbPartitions = gameData.getNumPartitions();
-        System.out.println("Nb partitions : " + nbPartitions);
+//        int nbPartitions = gameData.getNumPartitions();
+//        System.out.println("Nb partitions : " + nbPartitions);
 
         /* Changing GameWritable into DeckSummaryWritable with uniquePlayer initiate at 0.
            uniquePlayer is calculated in another RDD which will join this RDD below */
@@ -65,20 +54,18 @@ public class Spark {
                     Tuple2<String, DeckSummaryWritable> deckSummaryPlayer1 = new Tuple2<>(key,
                             new DeckSummaryWritable(key, game.win == 1 ? 1 : 0,
                                     1, 0, game.player1.clanTr,
-                                    game.win == 1 ? game.player1.deck - game.player2.deck : 0));
+                                    game.win == 1 ? game.player1.deck - game.player2.deck : 0, 0));
                     deckList.add(deckSummaryPlayer1);
                     key = keyWithGranularity(keyPlayer2.get(i), game.date);
                     Tuple2<String, DeckSummaryWritable> deckSummaryPlayer2 = new Tuple2<>(key,
                             new DeckSummaryWritable(key, game.win == 0 ? 1 : 0,
                                     1, 0, game.player2.clanTr,
-                                    game.win == 0 ? game.player2.deck - game.player1.deck : 0));
+                                    game.win == 0 ? game.player2.deck - game.player1.deck : 0, 0));
                     deckList.add(deckSummaryPlayer2);
                 }
                 return deckList.iterator();
             }
-        );
-
-        deckSummaries = deckSummaries.reduceByKey(
+        ).reduceByKey(
                 (DeckSummaryWritable a, DeckSummaryWritable b) -> {
                     long totalWins = a.totalWins + b.totalWins;
                     long totalUses = a.totalUses + b.totalUses;
@@ -88,7 +75,7 @@ public class Spark {
                     if (a.totalWins == 1) sumDeckStrength += a.avgDeckStrength;
                     if (b.totalWins == 1) sumDeckStrength += b.avgDeckStrength;
 
-                    return new DeckSummaryWritable(a.deckId, totalWins, totalUses, 0, highestClanLevel, sumDeckStrength);
+                    return new DeckSummaryWritable(a.deckId, totalWins, totalUses, 0, highestClanLevel, sumDeckStrength, 0);
                 }
         );
 
@@ -113,6 +100,11 @@ public class Spark {
                 mapToPair(x -> new Tuple2<>(x._1, 1L))
                 .reduceByKey(Long::sum);
 
+//        JavaPairRDD<String, DeckSummaryWritable> partitionedDeckSummaries = deckSummaries.partitionBy(new HashPartitioner(2200));
+//        JavaPairRDD<String, Long> partitionedUniquePlayers = uniquePlayerCount.partitionBy(new HashPartitioner(2200));
+//
+//        JavaPairRDD<String, Tuple2<DeckSummaryWritable, Long>> joinedRDD = partitionedDeckSummaries.join(partitionedUniquePlayers);
+
         JavaPairRDD<String, Tuple2<DeckSummaryWritable, Long>> joinedRDD = deckSummaries.join(uniquePlayerCount);
 
         JavaPairRDD<String, DeckSummaryWritable> updatedDeckSummaries = joinedRDD.mapToPair(
@@ -121,24 +113,27 @@ public class Spark {
                     DeckSummaryWritable deckSummary = tuple._2()._1();
 
                     deckSummary.uniquePlayers = tuple._2()._2();
-                    deckSummary.avgDeckStrength = deckSummary.avgDeckStrength / deckSummary.totalUses;
+                    if(deckSummary.totalUses != 0)
+                        deckSummary.avgDeckStrength = deckSummary.avgDeckStrength / deckSummary.totalUses;
+                    if(deckSummary.totalWins != 0)
+                        deckSummary.winRate = (double) deckSummary.totalWins / deckSummary.totalUses;
 
                     return new Tuple2<>(key, deckSummary);
                 }
         );
 
-        JavaPairRDD<String, Tuple2<String, Long>> deckWithDateTotalWins = updatedDeckSummaries.mapToPair(
+        JavaPairRDD<String, Tuple2<String, Double>> deckWithDateWinRate = updatedDeckSummaries.mapToPair(
                 (deck) -> {
                     String[] keyParts = deck._1.split("_");
-                    return new Tuple2<>(keyParts[0], new Tuple2<>(keyParts[1] + "_" + keyParts[2], deck._2.totalWins));
+                    return new Tuple2<>(keyParts[0], new Tuple2<>(keyParts[1] + "_" + keyParts[2], deck._2.winRate));
                 }
         );
 
-        JavaPairRDD<String, Iterable<Tuple2<String, Long>>> groupedDeckWithDateTotalWins = deckWithDateTotalWins.groupByKey();
+        JavaPairRDD<String, Iterable<Tuple2<String, Double>>> groupedDeckWithDateWinRate = deckWithDateWinRate.groupByKey();
 
-        JavaPairRDD<String, List<Tuple2<String, Long>>> NGramCardCombination = groupedDeckWithDateTotalWins
+        JavaPairRDD<String, List<Tuple2<String, Double>>> NGramCardCombination = groupedDeckWithDateWinRate
             .mapValues(iterable -> {
-                List<Tuple2<String, Long>> sortedList = new ArrayList<>();
+                List<Tuple2<String, Double>> sortedList = new ArrayList<>();
                 iterable.forEach(sortedList::add);
                 sortedList.sort(Comparator.comparing(Tuple2::_1));
                 return sortedList;

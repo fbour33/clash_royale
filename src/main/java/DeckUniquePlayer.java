@@ -26,13 +26,15 @@ public class DeckUniquePlayer {
             extends Mapper<Object, GameWritable, Text, UniquePlayerWritable> {
         private HashSet<UniquePlayerWritable> playerList = new HashSet<>();
 
-        private void addInHasMap(Context context, Instant date, PlayerWritable player){
+        private void addInHasSet(Instant date, PlayerWritable player){
             LocalDateTime dateTime = LocalDateTime.ofInstant(date, ZoneId.systemDefault());
             int year = dateTime.getYear();
             Month month = dateTime.getMonth();
             int week = dateTime.get(WeekFields.of(Locale.US).weekOfWeekBasedYear());
+            String id_year = player.cards + "_" + year;
             String id_month = player.cards + "_" + month + "_" + year;
             String id_week = player.cards + "_" + week + "_" + year;
+            playerList.add(new UniquePlayerWritable(id_year, player.playerId));
             playerList.add(new UniquePlayerWritable(id_month, player.playerId));
             playerList.add(new UniquePlayerWritable(id_week, player.playerId));
         }
@@ -40,8 +42,8 @@ public class DeckUniquePlayer {
         public void map(Object key, GameWritable value, Context context
         ) throws IOException, InterruptedException {
             GameWritable game = value.clone();
-            addInHasMap(context, game.date, game.player1);
-            addInHasMap(context, game.date, game.player2);
+            addInHasSet(game.date, game.player1);
+            addInHasSet(game.date, game.player2);
         }
 
         protected void cleanup(Context context) throws IOException, InterruptedException {
@@ -70,7 +72,7 @@ public class DeckUniquePlayer {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "DeckUniquePlayer");
-        job.setNumReduceTasks(1);
+        job.setNumReduceTasks(2);
         job.setJarByClass(DeckUniquePlayer.class);
         job.setMapperClass(DeckUniquePlayer.DeckUniquePlayerMapper.class);
         job.setMapOutputKeyClass(Text.class);
