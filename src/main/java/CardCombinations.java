@@ -1,20 +1,8 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class CardCombinations {
-//    public static void main(String[] args) {
-//        String[] cards = {"01", "23", "45", "67", "89", "ab", "cd", "ef"}; // Vos cartes
-//        List<String> allCombinations = getTwoAndThreeCombinations("01cd2389ab4567ef");
-//
-//        for (String combination : allCombinations) {
-//            System.out.println(combination);
-//        }
-//
-//        System.out.println(Arrays.toString(divideDeckIntoPairs("01cd2389ab4567ef")));
-//
-//    }
 
     /* Divide cards (deckId) into pairs and sort result array */
     private static String[] divideDeckIntoPairs(String deckId){

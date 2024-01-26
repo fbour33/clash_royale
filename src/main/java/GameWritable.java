@@ -74,17 +74,4 @@ public class GameWritable implements Writable, Cloneable {
             throw new AssertionError();
         }
     }
-
-//    @Override
-//    public String toString() {
-//        return "{" +
-//                "\"date\":\"" + date + "\"," +
-//                "\"round\":" + round + "," +
-//                "\"type\":\"" + type + "\"," +
-//                "\"mode\":\"" + mode + "\"," +
-//                "\"win\": " + win + "," +
-//                "\"player1\": " + player1.toString() + "," +
-//                "\"player2\": " + player2.toString() +
-//                "}";
-//    }
 }
