@@ -864,7 +864,7 @@ const cr_cards: Card[] = [
     maxLevel: 9,
     iconUrls: {
       medium:
-        "https://api-assets.clashroyale.com/cards/300/1QJ6XJ0X0zv0XJ6XJ0X0zv0XJ6XJ0X0zv0XJ6XJ0Xzv0.png",
+        "https://cdns3.royaleapi.com/cdn-cgi/image/w=150,h=180,format=auto/static/img/cards/v1-843264bf/rage.png",
     },
   },
   {
@@ -1016,7 +1016,7 @@ const cr_cards: Card[] = [
     id: 26000093,
     maxLevel: 4,
     iconUrls: {
-      "medium": "./images/littleprince.avif"
+      "medium": "https://cdns3.royaleapi.com/cdn-cgi/image/w=150,h=180,format=auto/static/img/cards/v1-843264bf/little-prince.png"
     }
   }
 ];

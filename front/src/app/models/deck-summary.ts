@@ -4,7 +4,7 @@ export interface DeckSummary {
   uses: number;
   uniquePlayers: number;
   highestClanLevel: number;
-  sumDiffForce: number;
   averageDiffForce: number;
+  winRate: number;
   cards: any[];
 }

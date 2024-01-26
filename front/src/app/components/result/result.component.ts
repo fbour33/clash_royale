@@ -1,36 +1,56 @@
-import {Component, Input} from '@angular/core';
-import {NgForOf, NgIf} from "@angular/common";
+import { Component, Input, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import Chart from 'chart.js/auto';
+import { NgForOf, NgIf } from "@angular/common";
+import { NgramService } from '../../services/ngram.service';
 
 @Component({
   selector: 'app-result',
   standalone: true,
-  imports: [
-    NgForOf,
-    NgIf
-  ],
+  imports: [NgForOf, NgIf],
   templateUrl: './result.component.html',
-  styleUrl: './result.component.css'
+  styleUrls: ['./result.component.css']
 })
-export class ResultComponent {
-  @Input() selectedCardIds: number[] = [];
+export class ResultComponent implements AfterViewInit, OnChanges {
+  @Input() ngrams: string = '0e1958';
+  title = 'ng-chart';
+  chart: any = [];
 
-  ngramStats: any[] = [];
+  constructor(private ngramService: NgramService) {}
 
-  constructor(private statsService: StatsService) {}
-
-  ngOnInit() {
-    this.getNgramStats();
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['ngrams'] && changes['ngrams'].currentValue) {
+      this.updateChart();
+    }
   }
 
-  getNgramStats() {
-    // La méthode getStats devrait être définie dans votre StatsService pour récupérer les données
-    this.statsService.getStats().subscribe(
-      data => {
-        this.ngramStats = data;
+
+  private updateChart() {
+    //Pour tester, remplacer this.ngrams par '070f143b4041576b' (dans notre ngrams.json)
+    const { labels, data } = this.ngramService.getChartData("0e1958");
+    this.chart = new Chart('myChart', {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Win Rate',
+            data: data,
+            borderWidth: 1,
+            fill: false,
+          },
+        ],
       },
-      error => {
-        console.error('There was an error!', error);
-      }
-    );
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }
+
+  ngAfterViewInit() {
+    this.updateChart();
   }
 }

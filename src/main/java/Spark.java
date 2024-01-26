@@ -142,5 +142,3 @@ public class Spark {
         NGramCardCombination.map(pair -> new Gson().toJson(pair)).saveAsTextFile(args[1]);
 
     }
-
-}
