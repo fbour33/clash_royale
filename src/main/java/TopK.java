@@ -1,5 +1,7 @@
+import com.google.gson.Gson;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -8,6 +10,9 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -19,7 +24,7 @@ public class TopK {
     public static class TopKMapper
             extends Mapper<Text, DeckSummaryWritable, Text, DeckSummaryWritable> {
 
-        private HashMap<String, TopKStructure<Long, DeckSummaryWritable>> topKMap = new HashMap<>();
+        private HashMap<String, TopKStructure<Double, DeckSummaryWritable>> topKMap = new HashMap<>();
 
         private String createHashMapKey(String key) {
             String[] keys = key.split("_");
@@ -32,19 +37,19 @@ public class TopK {
             if(value.totalUses >= 100){
                 String keyGranularity = createHashMapKey(key.toString());
                 if(!topKMap.containsKey(keyGranularity)){
-                    topKMap.put(keyGranularity, new TopKStructure<>(20, Long::compare));
+                    topKMap.put(keyGranularity, new TopKStructure<>(20, Double::compare));
                 }
 
-                topKMap.get(keyGranularity).addDeck(value.totalWins, value.clone());
+                topKMap.get(keyGranularity).addDeck((double) value.highestClanLevel, value.clone());
             }
 
         }
 
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
-            for(Map.Entry<String, TopKStructure<Long, DeckSummaryWritable>> entry : topKMap.entrySet()) {
+            for(Map.Entry<String, TopKStructure<Double, DeckSummaryWritable>> entry : topKMap.entrySet()) {
                 String compositeKey = entry.getKey();
-                TopKStructure<Long, DeckSummaryWritable> topkStructure = entry.getValue();
+                TopKStructure<Double, DeckSummaryWritable> topkStructure = entry.getValue();
                 for (DeckSummaryWritable value : topkStructure.topK.values()) {
                     context.write(new Text(compositeKey), value);
                 }
@@ -53,22 +58,36 @@ public class TopK {
     }
 
     public static class TopKReducer
-            extends Reducer<Text,DeckSummaryWritable,Text,DeckSummaryWritable> {
+            extends Reducer<Text,DeckSummaryWritable,NullWritable,Text> {
 
+        private Gson gson = new Gson();
+
+        private String getCards(String deckId){
+            String[] parseDeck = deckId.split("_");
+            return parseDeck[0];
+        }
 
         @Override
         public void reduce(Text key, Iterable<DeckSummaryWritable> values,
                            Context context
         ) throws IOException, InterruptedException {
 
-            TopKStructure<Long, DeckSummaryWritable> topKStructure = new TopKStructure<>(20, Long::compare);
+            TopKStructure<Double, DeckSummaryWritable> topKStructure = new TopKStructure<>(20, Double::compare);
             for(DeckSummaryWritable value : values){
                 DeckSummaryWritable deck = value.clone();
-                topKStructure.addDeck(deck.totalWins, deck);
+                topKStructure.addDeck((double) deck.highestClanLevel, deck);
             }
+            JsonArray jsonArray = new JsonArray();
+            for(DeckSummaryWritable value : topKStructure.getTopK().values()) {
+                DeckSummaryWritable deck = value.clone();
+                deck.deckId = getCards(deck.deckId);
+                JsonObject jsonValue = gson.fromJson(deck.toString(), JsonObject.class);
+                jsonArray.add(jsonValue);
+            }
+            JsonObject outputJson = new JsonObject();
+            outputJson.add(key.toString(), jsonArray);
 
-            for(DeckSummaryWritable value : topKStructure.getTopK().values())
-                context.write(new Text(value.deckId), value);
+            context.write(NullWritable.get(), new Text(gson.toJson(outputJson)));
 
         }
     }
@@ -82,8 +101,8 @@ public class TopK {
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DeckSummaryWritable.class);
         job.setReducerClass(TopK.TopKReducer.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DeckSummaryWritable.class);
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(Text.class);
         job.setOutputFormatClass(TextOutputFormat.class);
         job.setInputFormatClass(SequenceFileInputFormat.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));

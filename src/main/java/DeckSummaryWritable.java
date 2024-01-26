@@ -1,10 +1,12 @@
+import com.google.gson.Gson;
 import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class DeckSummaryWritable implements Writable, Cloneable {
+public class DeckSummaryWritable implements Writable, Cloneable, Serializable {
 
     public String deckId;
     public long totalWins;
@@ -12,17 +14,19 @@ public class DeckSummaryWritable implements Writable, Cloneable {
     public long uniquePlayers;
     public long highestClanLevel;
     public double avgDeckStrength;
+    public double winRate;
 
     public DeckSummaryWritable(){}
 
     public DeckSummaryWritable(String deckId, long totalWins, long totalUses,
-                               long uniquePlayers, long highestClanLevel, double avgDeckStrength){
+                               long uniquePlayers, long highestClanLevel, double avgDeckStrength, double winRate){
         this.deckId = deckId;
         this.totalWins = totalWins;
         this.totalUses = totalUses;
         this.uniquePlayers = uniquePlayers;
         this.highestClanLevel = highestClanLevel;
         this.avgDeckStrength = avgDeckStrength;
+        this.winRate = winRate;
     }
 
 
@@ -34,6 +38,7 @@ public class DeckSummaryWritable implements Writable, Cloneable {
         out.writeLong(uniquePlayers);
         out.writeLong(highestClanLevel);
         out.writeDouble(avgDeckStrength);
+        out.writeDouble(winRate);
     }
 
     @Override
@@ -44,6 +49,7 @@ public class DeckSummaryWritable implements Writable, Cloneable {
         uniquePlayers = in.readLong();
         highestClanLevel = in.readLong();
         avgDeckStrength = in.readDouble();
+        winRate = in.readDouble();
     }
 
     @Override
@@ -56,6 +62,7 @@ public class DeckSummaryWritable implements Writable, Cloneable {
             clone.uniquePlayers = this.uniquePlayers;
             clone.highestClanLevel = this.highestClanLevel;
             clone.avgDeckStrength = this.avgDeckStrength;
+            clone.winRate = this.winRate;
             return clone;
         }catch(CloneNotSupportedException e){
             throw new AssertionError();
@@ -64,12 +71,7 @@ public class DeckSummaryWritable implements Writable, Cloneable {
 
     @Override
     public String toString() {
-        return "DeckSummary{" +
-                "deckId: " + deckId + ", " +
-                "totalWins: " + totalWins + ", " +
-                "totalUses: " + totalUses + ", " +
-                "uniquePlayers: " + uniquePlayers + ", " +
-                "highestCLanLevel: " + highestClanLevel + ", " +
-                "avgDeckStrength: " + avgDeckStrength + "}";
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }
